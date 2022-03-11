@@ -8,6 +8,10 @@ COPY ./ /app
 # Install composer dependencies
 RUN composer install --ignore-platform-reqs --no-progress --no-ansi --no-dev
 
+# Test Steps, please remove these before actual use
+RUN cp .env.example .env
+RUN php artisan key:generate
+
 # Base Server Image
 FROM php:8.1-apache
 
