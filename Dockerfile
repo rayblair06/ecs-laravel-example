@@ -1,4 +1,14 @@
-# Base Image
+# Base Builder image
+FROM composer:latest as builder
+
+WORKDIR /app
+
+COPY ./ /app
+
+# Install composer dependencies
+RUN composer install --ignore-platform-reqs --no-progress --no-ansi --no-dev
+
+# Base Server Image
 FROM php:8.1-apache
 
 # Configure apache
@@ -6,7 +16,7 @@ RUN a2enmod rewrite
 COPY ./docker/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 
 # Copy files with dependencies
-COPY . /var/www/html
+COPY --from=builder ./app /var/www/html
 
 # Grant permission to Apache user
 WORKDIR /var/www/html
